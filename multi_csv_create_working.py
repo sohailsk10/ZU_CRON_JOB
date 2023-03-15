@@ -40,6 +40,7 @@ def get_div(data):
 
 
 if __name__ == '__main__':
+    print("PROGRAM START TIME: ",datetime.now())
     if DOWNLOAD_FILES:
         for filename in FILES_TO_FETCH:
             if ".xml" in filename:
@@ -94,3 +95,5 @@ if __name__ == '__main__':
         writer = csv.writer(save_fp)
         writer.writerow(["id", "path", "title", "description", "created-on", "last-modified", "dynamic-metadata"])
         writer.writerows(non_404_links)
+    
+    print("PROGRAM END TIME: ", datetime.now())
