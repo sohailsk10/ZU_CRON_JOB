@@ -74,7 +74,7 @@ if __name__ == '__main__':
     files = [files for _, _, files in os.walk(NEW_FILES_DIR)][0]
     print("FILES", files)
 
-    extracted_data = get_data(files, NEW_FILES_DIR)[:17]
+    extracted_data = get_data(files, NEW_FILES_DIR)
     print("LENGTH EXTRACTED DATA", len(extracted_data))
     divided_list_range = get_div(extracted_data)
     
