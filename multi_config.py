@@ -1,8 +1,8 @@
 NEW_FILES_DIR = "NEW_FILES"
-SAVE_FILES_DIR = "CSV"
+SAVE_FILES_DIR = "/home/chatbot_root/Zayed-University-Chatbot"
 SAVE_FILE_NAME = "MAIN.csv"
 DOWNLOAD_FILES = True
-NUMBER_OF_PROCESSES = 2
+NUMBER_OF_PROCESSES = 10
 
 FILES_TO_FETCH = [
     "https://www.zu.ac.ae/main/en/all_pages_json.json",
