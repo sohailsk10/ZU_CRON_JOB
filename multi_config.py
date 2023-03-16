@@ -1,6 +1,7 @@
 NEW_FILES_DIR = "NEW_FILES"
 SAVE_FILES_DIR = "/home/chatbot_root/Zayed-University-Chatbot"
-SAVE_FILE_NAME = "MAIN.csv"
+# SAVE_FILES_DIR = "CSV"
+SAVE_FILE_NAME = "MAIN_test.csv"
 DOWNLOAD_FILES = True
 NUMBER_OF_PROCESSES = 10
 
