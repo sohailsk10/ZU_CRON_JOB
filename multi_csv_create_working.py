@@ -54,7 +54,7 @@ if __name__ == '__main__':
                 
                 
                 response = requests.get(filename)
-                with open(NEW_FILES_DIR_SERVER + os.sep + file_name, 'wb') as file:
+                with open(NEW_FILES_DIR_SERVER + file_name, 'wb') as file:
                     file.write(response.content)
 
                 print("DOWNLOAD", file_name)
@@ -66,7 +66,7 @@ if __name__ == '__main__':
                 
                 response = requests.get(filename)
                 data = response.json()
-                with open(NEW_FILES_DIR_SERVER + os.sep + file_name, 'w') as f:
+                with open(NEW_FILES_DIR_SERVER + file_name, 'w') as f:
                     json.dump(data, f)
 
                 print("DOWNLOAD", file_name)
