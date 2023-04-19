@@ -6,17 +6,18 @@ from multiprocessing_utils import get_data, remove_404
 from multi_config import *
 
 
-save_file_csv = os.path.join(SAVE_FILES_DIR, SAVE_FILE_NAME)
+save_file_csv = os.path.join(NEW_FILES_DIR_SERVER, SAVE_FILE_NAME)
+save_arabic_file_csv = os.path.join(NEW_FILES_DIR_SERVER, SAVE_ARABIC_FILE_NAME)
 
 if os.path.exists(save_file_csv):
     os.remove(save_file_csv)
 
-if not os.path.exists(NEW_FILES_DIR):
-    os.mkdir(NEW_FILES_DIR)
+if not os.path.exists(NEW_FILES_DIR_SERVER):
+    os.mkdir(NEW_FILES_DIR_SERVER)
 else:
-    files = [files for _, _, files in os.walk(NEW_FILES_DIR)][0]
+    files = [files for _, _, files in os.walk(NEW_FILES_DIR_SERVER)][0]
     for _file in files:
-        os.remove(os.path.join(NEW_FILES_DIR, _file))
+        os.remove(os.path.join(NEW_FILES_DIR_SERVER, _file))
 
 
 if not os.path.exists(SAVE_FILES_DIR):
@@ -40,7 +41,6 @@ def get_div(data):
 
 
 if __name__ == '__main__':
-    print("PROGRAM START TIME: ",datetime.now())
     if DOWNLOAD_FILES:
         for filename in FILES_TO_FETCH:
             if ".xml" in filename:
@@ -54,7 +54,7 @@ if __name__ == '__main__':
                 
                 
                 response = requests.get(filename)
-                with open(NEW_FILES_DIR + os.sep + file_name, 'wb') as file:
+                with open(NEW_FILES_DIR_SERVER + os.sep + file_name, 'wb') as file:
                     file.write(response.content)
 
                 print("DOWNLOAD", file_name)
@@ -66,15 +66,15 @@ if __name__ == '__main__':
                 
                 response = requests.get(filename)
                 data = response.json()
-                with open(NEW_FILES_DIR + os.sep + file_name, 'w') as f:
+                with open(NEW_FILES_DIR_SERVER + os.sep + file_name, 'w') as f:
                     json.dump(data, f)
 
                 print("DOWNLOAD", file_name)
 
-    files = [files for _, _, files in os.walk(NEW_FILES_DIR)][0]
+    files = [files for _, _, files in os.walk(NEW_FILES_DIR_SERVER)][0]
     print("FILES", files)
 
-    extracted_data = get_data(files, NEW_FILES_DIR)
+    extracted_data = get_data(files, NEW_FILES_DIR_SERVER)
     print("LENGTH EXTRACTED DATA", len(extracted_data))
     divided_list_range = get_div(extracted_data)
     
@@ -96,4 +96,12 @@ if __name__ == '__main__':
         writer.writerow(["id", "path", "title", "description", "created-on", "last-modified", "dynamic-metadata"])
         writer.writerows(non_404_links)
     
-    print("PROGRAM END TIME: ", datetime.now())
+    with open(save_file_csv, encoding='utf-8') as input_file:
+        reader = csv.reader(input_file)
+        with open(save_arabic_file_csv, 'w', encoding='utf-8', newline='\n') as arabic_file:
+            arabic_writer = csv.writer(arabic_file)
+            arabic_writer.writerow(['id','path','title','description','created-on','last-modified','dynamic-metadata'])
+
+            for row in reader:
+                if '/ar/' in str(row[1]):
+                    arabic_writer.writerow(row)
