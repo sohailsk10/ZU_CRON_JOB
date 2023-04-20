@@ -4,7 +4,7 @@ import numpy as np
 import requests, os, json, itertools, csv
 from multiprocessing_utils import get_data, remove_404
 from multi_config import *
-
+import time
 
 save_file_csv = os.path.join(NEW_FILES_DIR_SERVER, SAVE_FILE_NAME)
 save_arabic_file_csv = os.path.join(NEW_FILES_DIR_SERVER, SAVE_ARABIC_FILE_NAME)
@@ -105,3 +105,8 @@ if __name__ == '__main__':
             for row in reader:
                 if '/ar/' in str(row[1]):
                     arabic_writer.writerow(row)
+
+    os.system('kill $(lsof -t -i:8000)')  # kill the Django server process
+    time.sleep(10)  # wait for the process to be killed
+    os.system('cd /home/chatbot_root/Zayed-University-Chatbot/')
+    os.system('nohup python3 manage.py runserver 0:8000 &')
