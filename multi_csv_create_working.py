@@ -107,6 +107,8 @@ if __name__ == '__main__':
                     arabic_writer.writerow(row)
 
     os.system('kill $(lsof -t -i:8000)')  # kill the Django server process
+    print("DJANGO SERVER STOPPED")
     time.sleep(10)  # wait for the process to be killed
     os.system('cd /home/chatbot_root/Zayed-University-Chatbot/')
     os.system('nohup python3 manage.py runserver 0:8000 &')
+    print("DJANGO SERVER STARTED")
