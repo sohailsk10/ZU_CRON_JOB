@@ -118,3 +118,4 @@ if __name__ == '__main__':
     os.system('nohup python3 manage.py runserver 0:8000 &')
     os.system("xdotool key Return")
     print("DJANGO SERVER STARTED")
+    print("DONE")
