@@ -70,45 +70,51 @@ if __name__ == '__main__':
                     json.dump(data, f)
 
                 print("DOWNLOAD", file_name)
+    if PROCESSED_FILES:
+        files = [files for _, _, files in os.walk(NEW_FILES_DIR_SERVER)][0]
+        print("FILES", files)
 
-    files = [files for _, _, files in os.walk(NEW_FILES_DIR_SERVER)][0]
-    print("FILES", files)
+        extracted_data = get_data(files, NEW_FILES_DIR_SERVER)
+        print("LENGTH EXTRACTED DATA", len(extracted_data))
+        divided_list_range = get_div(extracted_data)
+        
+        remove_404_parameters = [(extracted_data[div[0]:div[1] + 1], []) for div in divided_list_range]
+        
+        print(len(remove_404_parameters))
+        print(len(remove_404_parameters[0][0]))
+        print(len(remove_404_parameters[1][0]))
 
-    extracted_data = get_data(files, NEW_FILES_DIR_SERVER)
-    print("LENGTH EXTRACTED DATA", len(extracted_data))
-    divided_list_range = get_div(extracted_data)
-    
-    remove_404_parameters = [(extracted_data[div[0]:div[1] + 1], []) for div in divided_list_range]
-    
-    print(len(remove_404_parameters))
-    print(len(remove_404_parameters[0][0]))
-    print(len(remove_404_parameters[1][0]))
+        remove_404_pool = multiprocessing.Pool()
+        result_404 = remove_404_pool.map(remove_404, remove_404_parameters)
+        
+        non_404_links = list(itertools.chain.from_iterable(result_404))
+        divided_list_range = get_div(non_404_links)
 
-    remove_404_pool = multiprocessing.Pool()
-    result_404 = remove_404_pool.map(remove_404, remove_404_parameters)
-    
-    non_404_links = list(itertools.chain.from_iterable(result_404))
-    divided_list_range = get_div(non_404_links)
+        print(f"WRINTING IN {save_file_csv} NON 404 LINKS")
+        with open(save_file_csv, "w", newline="\n", encoding="utf-8") as save_fp:
+            writer = csv.writer(save_fp)
+            writer.writerow(["id", "path", "title", "description", "created-on", "last-modified", "dynamic-metadata"])
+            writer.writerows(non_404_links)
+        
+        with open(save_file_csv, encoding='utf-8') as input_file:
+            reader = csv.reader(input_file)
+            with open(save_arabic_file_csv, 'w', encoding='utf-8', newline='\n') as arabic_file:
+                arabic_writer = csv.writer(arabic_file)
+                arabic_writer.writerow(['id','path','title','description','created-on','last-modified','dynamic-metadata'])
 
-    print(f"WRINTING IN {save_file_csv} NON 404 LINKS")
-    with open(save_file_csv, "w", newline="\n", encoding="utf-8") as save_fp:
-        writer = csv.writer(save_fp)
-        writer.writerow(["id", "path", "title", "description", "created-on", "last-modified", "dynamic-metadata"])
-        writer.writerows(non_404_links)
-    
-    with open(save_file_csv, encoding='utf-8') as input_file:
-        reader = csv.reader(input_file)
-        with open(save_arabic_file_csv, 'w', encoding='utf-8', newline='\n') as arabic_file:
-            arabic_writer = csv.writer(arabic_file)
-            arabic_writer.writerow(['id','path','title','description','created-on','last-modified','dynamic-metadata'])
+                for row in reader:
+                    if '/ar/' in str(row[1]):
+                        arabic_writer.writerow(row)
 
-            for row in reader:
-                if '/ar/' in str(row[1]):
-                    arabic_writer.writerow(row)
-
-    os.system('kill $(lsof -t -i:8000)')  # kill the Django server process
+    # os.system('kill $(lsof -t -i:8000)')  # kill the Django server process
+    # os.system("kill $(netstat -ano | findstr :8000 | awk '{print $5}')")  # kill the Django server process
+    # os.system("taskkill /pid $(netstat -ano | findstr :8000 | awk '{print $5}')")  # kill the Django server process
+    os.system("taskkill netstat -ano | for /f 'tokens=5' %a in ('findstr :8000') do @echo %a")  # kill the Django server process
     print("DJANGO SERVER STOPPED")
-    time.sleep(10)  # wait for the process to be killed
+    time.sleep(20)  # wait for the process to be killed
     os.system('cd /home/chatbot_root/Zayed-University-Chatbot/')
+    os.system('ls')
+    time.sleep(10)
     os.system('nohup python3 manage.py runserver 0:8000 &')
+    os.system("xdotool key Return")
     print("DJANGO SERVER STARTED")
